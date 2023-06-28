@@ -10,7 +10,7 @@ class TranscriptsController < ApplicationController
 
     if flagged_words.empty?
       render json: 
-    { message: 'Audio processed successfully.'
+    { message: 'Audio processed successfully !.'
     }, Status: 200
     else
       render json: 
@@ -35,14 +35,14 @@ class TranscriptsController < ApplicationController
   end
 
   
-  private
   def convert_audio_to_text(audio_file)
     headers = {
       'authorization' => ENV['ASSEMBLYAI_API_TOKEN'],
-      'content-type' => 'audio/mpeg'
+      'content-type' => 'multipart/form-data'
     }
   
-    response = HTTParty.post(ENV['ASSEMBLYAI_SPEECH_TO_TEXT_URL'], body: audio_file, headers: headers)
+    response = HTTParty.post(ENV['ASSEMBLYAI_SPEECH_TO_TEXT_URL'], body: audio_file.tempfile.read, headers: headers)
+    
   
     if response.code == 201
       response['text']
